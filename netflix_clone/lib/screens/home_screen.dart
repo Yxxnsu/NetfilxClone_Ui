@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netflix_clone/data/data.dart';
+import 'package:netflix_clone/widgets/content_list.dart';
 import 'package:netflix_clone/widgets/custom_app_bar.dart';
 import 'package:netflix_clone/widgets/content_header.dart';
 import 'package:netflix_clone/widgets/previews.dart';
@@ -18,6 +19,8 @@ class _NavScreenState extends State<HomeScreen> {
 
   @override
     void initState() {
+
+      //TODO: Scroller AddListener
       _scrollController = ScrollController()
         ..addListener(() {
           setState(() {
@@ -37,16 +40,22 @@ class _NavScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;    
     return Scaffold(
-      extendBodyBehindAppBar: true, //AppBar 포함해서 표시.
+
+      //TODO: AppBar 덮어쓰기!
+      extendBodyBehindAppBar: true, 
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[850],
         child: Icon(Icons.cast),
         onPressed: (){},
       ),
+
+      //TODO: AppBar 사이즈 설정!
       appBar: PreferredSize(
         preferredSize: Size(screenSize.width,50),
         child: CustomAppBar(scrollOffset: _scrollOffset,),
       ),
+      
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -62,6 +71,25 @@ class _NavScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: ContentList(
+              title: 'My List',
+              contentList: myList,              
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ContentList(
+              title: 'Netflix Originals',
+              contentList: originals,     
+              isOriginal: true,            
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ContentList(
+              title: 'Trending',
+              contentList: trending,                         
+            ),
+          )
         ],
       )
     );

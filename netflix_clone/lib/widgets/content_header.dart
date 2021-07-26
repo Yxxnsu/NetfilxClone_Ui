@@ -43,9 +43,13 @@ class ContentHeader extends StatelessWidget {
             child: Image.asset(featuredContent.titleImageUrl!),
           ),
         ),
+        
+        //TODO: Postioned 꿀팁!
         Positioned(
+          right: 0,
+          left: 0,
           bottom: 40.0,
-          child: Row(
+          child: Row(            
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               VerticalIconButton(
@@ -69,14 +73,18 @@ class ContentHeader extends StatelessWidget {
   _playButton(){
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 20, 5),
-      child: TextButton.icon(      
-        icon: Icon(Icons.play_arrow,size: 30,),
+      child: ElevatedButton.icon(            
+        icon: Icon(Icons.play_arrow,size: 30,color:Colors.black),
         label: Text(
           'Play',
           style: TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,  
+            color:Colors.black,          
           )
+        ),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.white,          
         ),
         onPressed: (){},
       ),
