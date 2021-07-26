@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_clone/screens/nav_screen.dart';
+import 'package:netflix_clone/screens/home_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity, //적응형 플랫폼 밀도
         scaffoldBackgroundColor: Colors.black,
       ),
-      home: NavScreen(),
+      home: HomeScreen(),
     );
   }
 }
