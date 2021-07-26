@@ -21,13 +21,15 @@ class CustomAppBar extends StatelessWidget {
           children: [
             Image.asset(Assets.netflixLogo0),
             SizedBox(width:12),       
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _AppBarButton(title: 'TV Shows',onTap: ()=> print('TV Shows')),
-                _AppBarButton(title: 'Movies',onTap: ()=> print('Movies')),
-                _AppBarButton(title: 'My List',onTap: ()=> print('My List')),
-              ],
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _AppBarButton(title: 'TV Shows',onTap: ()=> print('TV Shows')),
+                  _AppBarButton(title: 'Movies',onTap: ()=> print('Movies')),
+                  _AppBarButton(title: 'My List',onTap: ()=> print('My List')),
+                ],
+              ),
             )     
           ],  
         ),
