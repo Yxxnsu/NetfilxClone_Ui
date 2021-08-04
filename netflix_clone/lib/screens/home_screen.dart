@@ -43,7 +43,7 @@ class _NavScreenState extends State<HomeScreen> {
 
       //TODO: AppBar 덮어쓰기!
       extendBodyBehindAppBar: true, 
-
+    
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[850],
         child: Icon(Icons.cast),
@@ -66,6 +66,7 @@ class _NavScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(top:20),
             sliver: SliverToBoxAdapter(
               child: PreViews(
+                key: PageStorageKey('previews'),
                 title: 'Previous',
                 contentList: previews,                
               ),
@@ -73,21 +74,27 @@ class _NavScreenState extends State<HomeScreen> {
           ),
           SliverToBoxAdapter(
             child: ContentList(
+              key: PageStorageKey('myList'),
               title: 'My List',
               contentList: myList,              
             ),
           ),
           SliverToBoxAdapter(
             child: ContentList(
+              key: PageStorageKey('originals'),
               title: 'Netflix Originals',
               contentList: originals,     
               isOriginal: true,            
             ),
           ),
-          SliverToBoxAdapter(
-            child: ContentList(
-              title: 'Trending',
-              contentList: trending,                         
+          SliverPadding(
+            key: PageStorageKey('trending'),
+            padding: EdgeInsets.only(bottom: 20),
+            sliver: SliverToBoxAdapter(
+              child: ContentList(
+                title: 'Trending',
+                contentList: trending,                         
+              ),
             ),
           )
         ],
