@@ -4,6 +4,9 @@ import 'package:netflix_clone/models/content_model.dart';
 import 'package:netflix_clone/widgets/vertical_icon_button.dart';
 import 'package:netflix_clone/widgets/widgets.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_web/video_player_web.dart';
+
+
 
 class ContentHeader extends StatelessWidget {
 
@@ -129,16 +132,20 @@ class _ContentHeaderDesktop extends StatefulWidget {
 class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
 
   late VideoPlayerController _videoPlayerController;
+  late Future<void> _initializeVideoPlayerFuture;
   bool _isMuted = true;
 
   @override
   void initState() { 
-    _videoPlayerController = VideoPlayerController.asset(widget.featuredContent.videoUrl!);
-    _videoPlayerController.addListener(() {
-      setState(() { });
+    _videoPlayerController = VideoPlayerController.network('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4');
+    _initializeVideoPlayerFuture = _videoPlayerController.initialize();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      // mutes the video
+      _videoPlayerController.setVolume(0); 
+      // Plays the video once the widget is build and loaded.
+      _videoPlayerController.play();
     });
-    _videoPlayerController.initialize().then((_) => setState((){}));
-    _videoPlayerController.play();
+    _videoPlayerController.setLooping(true);
 
     super.initState();
 
@@ -159,36 +166,63 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
       child: Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        AspectRatio(
-          aspectRatio: _videoPlayerController.value.isInitialized 
-          ? _videoPlayerController.value.aspectRatio
-          : 2.344,
-          child: _videoPlayerController.value.isInitialized 
-            ? VideoPlayer(_videoPlayerController)
-            : Image.asset(
-              widget.featuredContent.imageUrl,
-              fit: BoxFit.cover,
-            ),          
-        ),
-        VideoProgressIndicator(_videoPlayerController, allowScrubbing: true),
-        Container(
-          height: 500.0,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(widget.featuredContent.imageUrl),
-              fit: BoxFit.cover,
-            )
-          ),         
-        ),
-        Container(
-          height: 500.0,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.black, Colors.transparent],     
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,     
-            )
-          ),         
+
+        FutureBuilder(
+          future: _initializeVideoPlayerFuture,
+          builder: (context, snapshot){
+
+            if(snapshot.connectionState == ConnectionState.done && _videoPlayerController.dataSource.isNotEmpty){
+              return AspectRatio(
+                aspectRatio: _videoPlayerController.value.aspectRatio,
+                  child: VideoPlayer(_videoPlayerController)      
+              );              
+            } else {
+                return AspectRatio(
+                  aspectRatio: 2.344,
+                  child: Image.asset(
+                    widget.featuredContent.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                );    
+            }              
+          }
+        ),      
+        Positioned(
+            left: 0,
+            right: 0,
+            bottom: -1.0,
+            child: FutureBuilder(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot){
+                if(snapshot.connectionState == ConnectionState.done && _videoPlayerController.dataSource.isNotEmpty){
+                  return AspectRatio(
+                    aspectRatio: _videoPlayerController.value.aspectRatio,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                          colors: [Colors.black, Colors.transparent],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return AspectRatio(
+                    aspectRatio: 2.344,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                          colors: [Colors.black, Colors.transparent],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
+            )                      
         ),
         Positioned(
           left: 60,
@@ -249,7 +283,7 @@ class __ContentHeaderDesktopState extends State<_ContentHeaderDesktop> {
                       ),
                       onPressed: ()=> setState((){
                         _isMuted 
-                          ? _videoPlayerController.setVolume(100)
+                          ? _videoPlayerController.setVolume(0)
                           : _videoPlayerController.setVolume(0);
                         _isMuted = _videoPlayerController.value.volume == 0;
                       }),                
